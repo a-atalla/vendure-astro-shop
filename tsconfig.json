@@ -1,5 +1,6 @@
 {
   "extends": "astro/tsconfigs/strict",
+  "exclude": [ "src/graphql/_generated.ts"],
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {

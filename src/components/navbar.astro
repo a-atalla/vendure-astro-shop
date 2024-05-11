@@ -52,7 +52,7 @@ import { Icon } from "astro-icon/components";
   </div>
 </nav>
 <script>
-  document.getElementById("burger").addEventListener("click", function () {
-    document.getElementById("menu").classList.toggle("hidden");
+  document.getElementById("burger")?.addEventListener("click", function () {
+    document.getElementById("menu")?.classList.toggle("hidden");
   });
 </script>

@@ -34,6 +34,7 @@ query getCollection($slug: String, $id: ID) {
   collection(slug: $slug, id: $id) {
     id
     name
+    description
     slug
     breadcrumbs {
       id

@@ -38,7 +38,6 @@ async function sendQuery<
 		headers.append("vendure-token", channelToken);
 	}
 
-	console.log;
 	return fetch(API_URL, {
 		credentials: "include",
 		method: "POST",

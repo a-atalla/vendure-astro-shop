@@ -3,21 +3,26 @@ import Footer from "~/components/footer.astro";
 import Navbar from "~/components/navbar.astro";
 type Props = {
   title: string;
+  description: string;
 };
-const { title } = Astro.props;
+const { title, description } = Astro.props;
 ---
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
     <title>Vendur - {title}</title>
   </head>
-  <body>
+  <body class="flex flex-col h-screen">
     <Navbar />
-    <slot />
+    <main class="flex-1">
+      <slot />
+    </main>
     <Footer />
   </body>
 </html>

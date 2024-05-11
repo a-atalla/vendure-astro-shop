@@ -1,0 +1,158 @@
+---
+import type { ProductVariant } from "~/graphql/_generated";
+import { sdk } from "~/graphql/sdk";
+import BaseLayout from "~/layouts/base.astro";
+import { formatPrice } from "~/utils";
+
+const { slug } = Astro.params as { slug: string };
+const variantId = Astro.url.searchParams.get("variantId");
+const res = await sdk.getProductBySlug({ slug: slug });
+const product = res.product;
+let selectedVariant: ProductVariant;
+if (variantId) {
+  selectedVariant = product?.variants?.find(
+    (variant) => variant.id === variantId
+  ) as ProductVariant;
+} else {
+  selectedVariant = product?.variants?.[0] as ProductVariant;
+}
+type StockLevel = "IN_STOCK" | "OUT_OF_STOCK" | "LOW_STOCK";
+let stockLevelLabel = "";
+let badgeClasses = "bg-gray-100 text-gray-800";
+switch (selectedVariant.stockLevel as StockLevel) {
+  case "IN_STOCK":
+    stockLevelLabel = "In Stock";
+    badgeClasses = "bg-green-100 text-green-800";
+    break;
+  case "OUT_OF_STOCK":
+    stockLevelLabel = "Out Of Stock";
+    badgeClasses = "bg-red-100 text-red-800";
+    break;
+  case "LOW_STOCK":
+    stockLevelLabel = "Low Stock";
+    badgeClasses = "bg-yellow-100 text-yellow-800";
+    break;
+}
+---
+
+<BaseLayout
+  title={product?.name || ""}
+  description={product?.description || ""}
+>
+  <div class="max-w-6xl mx-auto px-4">
+    <h2
+      class="text-3xl sm:text-5xl font-light tracking-tight text-gray-900 my-8"
+    >
+      {product?.name}
+    </h2>
+    <div class="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start mt-4 md:mt-12">
+      <div class="w-full max-w-2xl mx-auto sm:block lg:max-w-none">
+        <span class="rounded-md overflow-hidden"
+          ><div class="w-full h-full object-center object-cover rounded-lg">
+            <img
+              src={`${product?.featuredAsset?.preview}?w=800`}
+              alt={product?.name}
+              class="w-full h-full object-center object-cover rounded-lg"
+            />
+          </div></span
+        >
+      </div><div class="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
+        <div class="">
+          <h3 class="sr-only">Description</h3>
+          <div class="text-base text-gray-700">
+            <p>{product?.description}</p>
+          </div>
+        </div>
+        <!-- submit form on select change -->
+        <form class="mt-8" method="GET">
+          <!-- select variant form -->
+          <label
+            for="productVariant"
+            class="block text-sm font-medium text-gray-700">Select option</label
+          >
+          <select
+            onchange="this.form.submit()"
+            class="mt-1 block w-full pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md"
+            id="productVariant"
+            name="variantId"
+          >
+            {
+              product?.variants?.map((variant) => (
+                <option
+                  value={variant.id}
+                  selected={selectedVariant.id === variant.id}
+                >
+                  {variant.name}
+                </option>
+              ))
+            }
+          </select>
+        </form>
+        <form method="get" action="/api/active-order">
+          <!-- Add variant to cart form-->
+          <div class="mt-4">
+            <div class="mt-10 flex flex-col sm:flex-row sm:items-center">
+              <p class="text-3xl text-gray-900 mr-4">
+                {
+                  formatPrice(
+                    selectedVariant?.priceWithTax,
+                    selectedVariant?.currencyCode
+                  )
+                }
+              </p><div class="flex sm:flex-col1 align-baseline">
+                <button
+                  type="submit"
+                  class="max-w-xs flex-1 bg-primary-600 hover:bg-primary-700
+                                     transition-colors border border-transparent rounded-md py-3 px-8 flex items-center
+                                      justify-center text-base font-medium text-white focus:outline-none
+                                      focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-primary-500 sm:w-full"
+                  >Add to cart</button
+                >
+                <button
+                  type="button"
+                  class="ml-4 py-3 px-3 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-500"
+                  ><svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    aria-hidden="true"
+                    class="h-6 w-6 flex-shrink-0"
+                    ><path
+                      d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z"
+                    ></path></svg
+                  ><span class="sr-only">Add to favorites</span></button
+                >
+              </div>
+            </div>
+            <div class="mt-2 flex items-center space-x-2">
+              <span class="text-gray-500">{selectedVariant.sku}</span><span
+                class={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${badgeClasses}`}
+                >{stockLevelLabel}</span
+              >
+            </div>
+
+            <section class="mt-12 pt-12 border-t text-xs">
+              <h3 class="text-gray-600 font-bold mb-2">
+                Shipping &amp; Returns
+              </h3>
+              <div class="text-gray-500 space-y-1">
+                <p>
+                  Standard shipping: 3 - 5 working days. Express shipping: 1 - 3
+                  working days.
+                </p>
+                <p>
+                  Shipping costs depend on delivery address and will be
+                  calculated during checkout.
+                </p>
+                <p>
+                  Returns are subject to terms. Please see the RETURNS PAGE for
+                  further information.
+                </p>
+              </div>
+            </section>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
