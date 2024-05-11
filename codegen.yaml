@@ -1,0 +1,25 @@
+overwrite: true
+schema:
+  - "${VENDURE_API_URL:https://demo.vendure.io/shop-api}"
+  # This is the additional schema extension that would be present it
+  # the Stripe playment plugin is enabled on the Vendure server. Added
+  # manually here to allow codegen to work regardless.
+  - "type Mutation { createStripePaymentIntent: String }"
+  # This is the additional schema extension that would be present it
+  # the Braintree playment plugin is enabled on the Vendure server. Added
+  # manually here to allow codegen to work regardless.
+  - "type Query { generateBraintreeClientToken: String }"
+documents:
+  - "src/graphql/**/*.gql"
+config:
+  scalars:
+    Money: number
+generates:
+  src/graphql/_generated.ts: # generated sdk
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-generic-sdk
+  src/graphql/schema.graphql: # for vscode plugin to autocomplete
+    plugins:
+      - schema-ast

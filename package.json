@@ -7,16 +7,24 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "codegen": "graphql-codegen --config codegen.yaml"
   },
   "dependencies": {
     "@astrojs/check": "^0.5.10",
     "@astrojs/node": "^8.2.5",
+    "@astrojs/tailwind": "^5.1.0",
     "astro": "^4.7.1",
-    "graphql": "^16.8.1"
+    "astro-icon": "^1.1.0",
+    "graphql": "^16.8.1",
+    "tailwindcss": "^3.4.3"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/cli": "5.0.2",
+    "@graphql-codegen/introspection": "4.0.3",
+    "@graphql-codegen/typescript": "4.0.6",
+    "@graphql-codegen/typescript-document-nodes": "4.0.6",
+    "@graphql-codegen/typescript-generic-sdk": "^4.0.1",
     "typescript": "^5.4.5"
   }
 }

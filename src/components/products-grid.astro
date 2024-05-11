@@ -1,0 +1,37 @@
+---
+import type { Product, SearchResult } from "~/graphql/_generated";
+import { formatPrice } from "~/utils";
+
+type Props = {
+  products: SearchResult;
+};
+
+const { products } = Astro.props;
+---
+
+<div class="sm:col-span-5 lg:col-span-4 space-y-6">
+  <div
+    class="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8"
+  >
+    {
+      products.map((product) => {
+        return (
+          <a class="flex flex-col" href="/products/laptop">
+            <>
+              <img
+                class="rounded-xl flex-grow object-cover aspect-[7/8]"
+                alt=""
+                src={product.productAsset?.preview}
+              />
+              <div class="h-2" />
+              <div class="text-sm text-gray-700">{product.productName}</div>
+              <div class="text-sm font-medium text-gray-900">
+                {formatPrice(product.priceWithTax, product.currencyCode)}
+              </div>
+            </>
+          </a>
+        );
+      })
+    }
+  </div>
+</div>

@@ -1,0 +1,25 @@
+---
+import CollectionsGrid from "~/components/collections-grid.astro";
+import ProductsGrid from "~/components/products-grid.astro";
+import type { Collection, Product } from "~/graphql/_generated";
+import { sdk } from "~/graphql/sdk";
+import Base from "~/layouts/base.astro";
+
+const { slug } = Astro.params;
+const colRes = await sdk.getCollection({ slug });
+const prodRes = await sdk.search({
+  input: { collectionSlug: slug, groupByProduct: true },
+});
+const collection = colRes.collection as Collection;
+const subCollections = colRes.collection?.children;
+const products = prodRes.search.items;
+console.log(products);
+---
+
+<Base title={collection.name}>
+  <CollectionsGrid collections={subCollections} />
+  <div class="mt-6 grid sm:grid-cols-5 gap-x-4">
+    <div>sidebar</div>
+    <ProductsGrid products={products} />
+  </div>
+</Base>

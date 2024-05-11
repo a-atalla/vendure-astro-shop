@@ -1,0 +1,53 @@
+query listTopLevelCollections {
+  collections(options: { topLevelOnly: true }) {
+    items {
+      id
+      slug
+      name
+      featuredAsset {
+        id
+        preview
+      }
+    }
+  }
+}
+
+query listCollections($options: CollectionListOptions) {
+  collections(options: $options) {
+    items {
+      id
+      name
+      slug
+      parent {
+        id
+        name
+      }
+      featuredAsset {
+        id
+        preview
+      }
+    }
+  }
+}
+
+query getCollection($slug: String, $id: ID) {
+  collection(slug: $slug, id: $id) {
+    id
+    name
+    slug
+    breadcrumbs {
+      id
+      name
+      slug
+    }
+    children {
+      id
+      name
+      slug
+      featuredAsset {
+        id
+        preview
+      }
+    }
+  }
+}
