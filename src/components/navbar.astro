@@ -55,4 +55,13 @@ import { Icon } from "astro-icon/components";
   document.getElementById("burger")?.addEventListener("click", function () {
     document.getElementById("menu")?.classList.toggle("hidden");
   });
+
+  const result = fetch("/api/cart")
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("!!!!! ", data);
+    })
+    .catch((err) => {
+      console.error("!!!! ", err);
+    });
 </script>
