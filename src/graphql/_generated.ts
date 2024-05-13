@@ -3408,6 +3408,36 @@ export type GetCollectionQueryVariables = Exact<{
 
 export type GetCollectionQuery = { __typename?: 'Query', collection?: { __typename?: 'Collection', id: string, name: string, description: string, slug: string, breadcrumbs: Array<{ __typename?: 'CollectionBreadcrumb', id: string, name: string, slug: string }>, children?: Array<{ __typename?: 'Collection', id: string, name: string, slug: string, featuredAsset?: { __typename?: 'Asset', id: string, preview: string } | null }> | null } | null };
 
+export type ActiveOrderFragment = { __typename: 'Order', id: string, code: string, couponCodes: Array<string>, state: string, currencyCode: CurrencyCode, totalQuantity: number, subTotalWithTax: number, shippingWithTax: number, totalWithTax: number, discounts: Array<{ __typename?: 'Discount', description: string, amountWithTax: number }>, lines: Array<{ __typename?: 'OrderLine', id: string, unitPriceWithTax: number, quantity: number, linePriceWithTax: number, productVariant: { __typename?: 'ProductVariant', id: string, name: string, sku: string }, featuredAsset?: { __typename?: 'Asset', id: string, preview: string } | null }>, shippingLines: Array<{ __typename?: 'ShippingLine', priceWithTax: number, shippingMethod: { __typename?: 'ShippingMethod', description: string } }> };
+
+export type GetActiveOrderQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetActiveOrderQuery = { __typename?: 'Query', activeOrder?: { __typename: 'Order', id: string, code: string, couponCodes: Array<string>, state: string, currencyCode: CurrencyCode, totalQuantity: number, subTotalWithTax: number, shippingWithTax: number, totalWithTax: number, discounts: Array<{ __typename?: 'Discount', description: string, amountWithTax: number }>, lines: Array<{ __typename?: 'OrderLine', id: string, unitPriceWithTax: number, quantity: number, linePriceWithTax: number, productVariant: { __typename?: 'ProductVariant', id: string, name: string, sku: string }, featuredAsset?: { __typename?: 'Asset', id: string, preview: string } | null }>, shippingLines: Array<{ __typename?: 'ShippingLine', priceWithTax: number, shippingMethod: { __typename?: 'ShippingMethod', description: string } }> } | null };
+
+export type AddItemToOrderMutationVariables = Exact<{
+  productVariantId: Scalars['ID']['input'];
+  quantity: Scalars['Int']['input'];
+}>;
+
+
+export type AddItemToOrderMutation = { __typename?: 'Mutation', addItemToOrder: { __typename?: 'InsufficientStockError', errorCode: ErrorCode, message: string, quantityAvailable: number, order: { __typename: 'Order', id: string, code: string, couponCodes: Array<string>, state: string, currencyCode: CurrencyCode, totalQuantity: number, subTotalWithTax: number, shippingWithTax: number, totalWithTax: number, discounts: Array<{ __typename?: 'Discount', description: string, amountWithTax: number }>, lines: Array<{ __typename?: 'OrderLine', id: string, unitPriceWithTax: number, quantity: number, linePriceWithTax: number, productVariant: { __typename?: 'ProductVariant', id: string, name: string, sku: string }, featuredAsset?: { __typename?: 'Asset', id: string, preview: string } | null }>, shippingLines: Array<{ __typename?: 'ShippingLine', priceWithTax: number, shippingMethod: { __typename?: 'ShippingMethod', description: string } }> } } | { __typename?: 'NegativeQuantityError', errorCode: ErrorCode, message: string } | { __typename: 'Order', id: string, code: string, couponCodes: Array<string>, state: string, currencyCode: CurrencyCode, totalQuantity: number, subTotalWithTax: number, shippingWithTax: number, totalWithTax: number, discounts: Array<{ __typename?: 'Discount', description: string, amountWithTax: number }>, lines: Array<{ __typename?: 'OrderLine', id: string, unitPriceWithTax: number, quantity: number, linePriceWithTax: number, productVariant: { __typename?: 'ProductVariant', id: string, name: string, sku: string }, featuredAsset?: { __typename?: 'Asset', id: string, preview: string } | null }>, shippingLines: Array<{ __typename?: 'ShippingLine', priceWithTax: number, shippingMethod: { __typename?: 'ShippingMethod', description: string } }> } | { __typename?: 'OrderLimitError', errorCode: ErrorCode, message: string } | { __typename?: 'OrderModificationError', errorCode: ErrorCode, message: string } };
+
+export type RemoveItemFromOrderMutationVariables = Exact<{
+  orderLineId: Scalars['ID']['input'];
+}>;
+
+
+export type RemoveItemFromOrderMutation = { __typename?: 'Mutation', removeOrderLine: { __typename: 'Order', id: string, code: string, couponCodes: Array<string>, state: string, currencyCode: CurrencyCode, totalQuantity: number, subTotalWithTax: number, shippingWithTax: number, totalWithTax: number, discounts: Array<{ __typename?: 'Discount', description: string, amountWithTax: number }>, lines: Array<{ __typename?: 'OrderLine', id: string, unitPriceWithTax: number, quantity: number, linePriceWithTax: number, productVariant: { __typename?: 'ProductVariant', id: string, name: string, sku: string }, featuredAsset?: { __typename?: 'Asset', id: string, preview: string } | null }>, shippingLines: Array<{ __typename?: 'ShippingLine', priceWithTax: number, shippingMethod: { __typename?: 'ShippingMethod', description: string } }> } | { __typename?: 'OrderModificationError', errorCode: ErrorCode, message: string } };
+
+export type AdjustOrderLineMutationVariables = Exact<{
+  orderLineId: Scalars['ID']['input'];
+  quantity: Scalars['Int']['input'];
+}>;
+
+
+export type AdjustOrderLineMutation = { __typename?: 'Mutation', adjustOrderLine: { __typename?: 'InsufficientStockError', errorCode: ErrorCode, message: string } | { __typename?: 'NegativeQuantityError', errorCode: ErrorCode, message: string } | { __typename: 'Order', id: string, code: string, couponCodes: Array<string>, state: string, currencyCode: CurrencyCode, totalQuantity: number, subTotalWithTax: number, shippingWithTax: number, totalWithTax: number, discounts: Array<{ __typename?: 'Discount', description: string, amountWithTax: number }>, lines: Array<{ __typename?: 'OrderLine', id: string, unitPriceWithTax: number, quantity: number, linePriceWithTax: number, productVariant: { __typename?: 'ProductVariant', id: string, name: string, sku: string }, featuredAsset?: { __typename?: 'Asset', id: string, preview: string } | null }>, shippingLines: Array<{ __typename?: 'ShippingLine', priceWithTax: number, shippingMethod: { __typename?: 'ShippingMethod', description: string } }> } | { __typename?: 'OrderLimitError', errorCode: ErrorCode, message: string } | { __typename?: 'OrderModificationError', errorCode: ErrorCode, message: string } };
+
 export type DetailedProductFragment = { __typename?: 'Product', id: string, name: string, description: string, collections: Array<{ __typename?: 'Collection', id: string, slug: string, name: string, breadcrumbs: Array<{ __typename?: 'CollectionBreadcrumb', id: string, name: string, slug: string }> }>, facetValues: Array<{ __typename?: 'FacetValue', id: string, code: string, name: string, facet: { __typename?: 'Facet', id: string, code: string, name: string } }>, featuredAsset?: { __typename?: 'Asset', id: string, preview: string } | null, assets: Array<{ __typename?: 'Asset', id: string, preview: string }>, variants: Array<{ __typename?: 'ProductVariant', id: string, name: string, priceWithTax: number, currencyCode: CurrencyCode, sku: string, stockLevel: string, featuredAsset?: { __typename?: 'Asset', id: string, preview: string } | null }> };
 
 export type GetProductByIdQueryVariables = Exact<{
@@ -3440,6 +3470,45 @@ export type SearchFacetValuesQueryVariables = Exact<{
 
 export type SearchFacetValuesQuery = { __typename?: 'Query', search: { __typename?: 'SearchResponse', totalItems: number, facetValues: Array<{ __typename?: 'FacetValueResult', count: number, facetValue: { __typename?: 'FacetValue', id: string, name: string, facet: { __typename?: 'Facet', id: string, name: string } } }> } };
 
+export const ActiveOrderFragmentDoc = gql`
+    fragment ActiveOrder on Order {
+  __typename
+  id
+  code
+  couponCodes
+  state
+  currencyCode
+  totalQuantity
+  subTotalWithTax
+  shippingWithTax
+  totalWithTax
+  discounts {
+    description
+    amountWithTax
+  }
+  lines {
+    id
+    unitPriceWithTax
+    quantity
+    linePriceWithTax
+    productVariant {
+      id
+      name
+      sku
+    }
+    featuredAsset {
+      id
+      preview
+    }
+  }
+  shippingLines {
+    shippingMethod {
+      description
+    }
+    priceWithTax
+  }
+}
+    `;
 export const DetailedProductFragmentDoc = gql`
     fragment DetailedProduct on Product {
   id
@@ -3574,6 +3643,52 @@ export const GetCollectionDocument = gql`
   }
 }
     `;
+export const GetActiveOrderDocument = gql`
+    query getActiveOrder {
+  activeOrder {
+    ...ActiveOrder
+  }
+}
+    ${ActiveOrderFragmentDoc}`;
+export const AddItemToOrderDocument = gql`
+    mutation addItemToOrder($productVariantId: ID!, $quantity: Int!) {
+  addItemToOrder(productVariantId: $productVariantId, quantity: $quantity) {
+    ...ActiveOrder
+    ... on ErrorResult {
+      errorCode
+      message
+    }
+    ... on InsufficientStockError {
+      quantityAvailable
+      order {
+        ...ActiveOrder
+      }
+    }
+  }
+}
+    ${ActiveOrderFragmentDoc}`;
+export const RemoveItemFromOrderDocument = gql`
+    mutation removeItemFromOrder($orderLineId: ID!) {
+  removeOrderLine(orderLineId: $orderLineId) {
+    ...ActiveOrder
+    ... on ErrorResult {
+      errorCode
+      message
+    }
+  }
+}
+    ${ActiveOrderFragmentDoc}`;
+export const AdjustOrderLineDocument = gql`
+    mutation adjustOrderLine($orderLineId: ID!, $quantity: Int!) {
+  adjustOrderLine(orderLineId: $orderLineId, quantity: $quantity) {
+    ...ActiveOrder
+    ... on ErrorResult {
+      errorCode
+      message
+    }
+  }
+}
+    ${ActiveOrderFragmentDoc}`;
 export const GetProductByIdDocument = gql`
     query getProductById($id: ID!) {
   product(id: $id) {
@@ -3641,6 +3756,18 @@ export function getSdk<C>(requester: Requester<C>) {
     },
     getCollection(variables?: GetCollectionQueryVariables, options?: C): Promise<GetCollectionQuery> {
       return requester<GetCollectionQuery, GetCollectionQueryVariables>(GetCollectionDocument, variables, options) as Promise<GetCollectionQuery>;
+    },
+    getActiveOrder(variables?: GetActiveOrderQueryVariables, options?: C): Promise<GetActiveOrderQuery> {
+      return requester<GetActiveOrderQuery, GetActiveOrderQueryVariables>(GetActiveOrderDocument, variables, options) as Promise<GetActiveOrderQuery>;
+    },
+    addItemToOrder(variables: AddItemToOrderMutationVariables, options?: C): Promise<AddItemToOrderMutation> {
+      return requester<AddItemToOrderMutation, AddItemToOrderMutationVariables>(AddItemToOrderDocument, variables, options) as Promise<AddItemToOrderMutation>;
+    },
+    removeItemFromOrder(variables: RemoveItemFromOrderMutationVariables, options?: C): Promise<RemoveItemFromOrderMutation> {
+      return requester<RemoveItemFromOrderMutation, RemoveItemFromOrderMutationVariables>(RemoveItemFromOrderDocument, variables, options) as Promise<RemoveItemFromOrderMutation>;
+    },
+    adjustOrderLine(variables: AdjustOrderLineMutationVariables, options?: C): Promise<AdjustOrderLineMutation> {
+      return requester<AdjustOrderLineMutation, AdjustOrderLineMutationVariables>(AdjustOrderLineDocument, variables, options) as Promise<AdjustOrderLineMutation>;
     },
     getProductById(variables: GetProductByIdQueryVariables, options?: C): Promise<GetProductByIdQuery> {
       return requester<GetProductByIdQuery, GetProductByIdQueryVariables>(GetProductByIdDocument, variables, options) as Promise<GetProductByIdQuery>;

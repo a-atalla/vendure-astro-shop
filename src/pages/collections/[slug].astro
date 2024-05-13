@@ -7,10 +7,17 @@ import { sdk } from "~/graphql/sdk";
 import BaseLayout from "~/layouts/base.astro";
 
 const { slug } = Astro.params;
-const colRes = await sdk.getCollection({ slug });
-const prodRes = await sdk.search({
-  input: { collectionSlug: slug, groupByProduct: true },
-});
+const colRes = await sdk.getCollection(
+  { slug },
+  { astroCookies: Astro.cookies }
+);
+const prodRes = await sdk.search(
+  {
+    input: { collectionSlug: slug, groupByProduct: true },
+  },
+  { astroCookies: Astro.cookies }
+);
+
 const collection = colRes.collection as Collection;
 const subCollections = colRes.collection?.children as Array<Collection>;
 const products = prodRes.search.items as Array<SearchResult>;

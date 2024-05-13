@@ -6,7 +6,10 @@ import { formatPrice } from "~/utils";
 
 const { slug } = Astro.params as { slug: string };
 const variantId = Astro.url.searchParams.get("variantId");
-const res = await sdk.getProductBySlug({ slug: slug });
+const res = await sdk.getProductBySlug(
+  { slug: slug },
+  { astroCookies: Astro.cookies }
+);
 const product = res.product;
 let selectedVariant: ProductVariant;
 if (variantId) {
@@ -33,6 +36,17 @@ switch (selectedVariant.stockLevel as StockLevel) {
     badgeClasses = "bg-yellow-100 text-yellow-800";
     break;
 }
+
+if (Astro.request.method === "POST") {
+  console.log("Add to cart form submitted");
+  const result = await sdk.addItemToOrder(
+    { productVariantId: selectedVariant.id, quantity: 1 },
+    { astroCookies: Astro.cookies }
+  );
+}
+
+// const cart = await sdk.getActiveOrder({}, { astroCookies: Astro.cookies });
+// console.log("cart", cart);
 ---
 
 <BaseLayout
@@ -88,7 +102,7 @@ switch (selectedVariant.stockLevel as StockLevel) {
             }
           </select>
         </form>
-        <form method="get" action="/api/active-order">
+        <form method="POST">
           <!-- Add variant to cart form-->
           <div class="mt-4">
             <div class="mt-10 flex flex-col sm:flex-row sm:items-center">

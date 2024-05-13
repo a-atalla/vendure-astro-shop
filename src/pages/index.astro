@@ -1,19 +1,16 @@
 ---
-import Navbar from "~/components/navbar.astro";
 import Hero from "~/components/hero.astro";
 import CollectionsGrid from "~/components/collections-grid.astro";
-import Footer from "~/components/footer.astro";
-import { sdk } from "../graphql/sdk";
+import { sdk } from "~/graphql/sdk";
 import type { Collection } from "~/graphql/_generated";
 import BaseLayout from "~/layouts/base.astro";
 
-const res = await sdk.listCollections(
-  { options: { take: 10, topLevelOnly: true } },
-  {
-    cookies: Astro.cookies,
-  }
-);
+const res = await sdk.listCollections({
+  options: { take: 10, topLevelOnly: true },
+});
 const collections = res.collections.items as Array<Collection>;
+const res1 = await sdk.getActiveOrder({}, { astroCookies: Astro.cookies });
+console.log({ res1 });
 ---
 
 <BaseLayout title="Home" description="Vendure astro storefront">
