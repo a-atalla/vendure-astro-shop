@@ -6,7 +6,7 @@ import type { Collection } from "~/graphql/_generated";
 import BaseLayout from "~/layouts/base.astro";
 
 const res = await sdk.listCollections({
-  options: { take: 10, topLevelOnly: true },
+  options: { take: 12 },
 });
 const collections = res.collections.items as Array<Collection>;
 const res1 = await sdk.getActiveOrder({}, { astroCookies: Astro.cookies });
