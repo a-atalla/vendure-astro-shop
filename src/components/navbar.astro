@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import Cart from "~/components/cart.astro";
 ---
 
 <!-- tailwind responsive navbar with burger button opn mobile -->
@@ -8,60 +9,15 @@ import { Icon } from "astro-icon/components";
     <div class="flex items-center flex-shrink-0 text-white mr-6">
       <a href="/" class="font-semibold text-xl tracking-tight">Site Title</a>
     </div>
-    <Icon name="bag" size={24} />
-    <div class="block lg:hidden">
+
+    <div class="flex justify-center items-center">
+      <Cart isOpen />
       <button
         id="burger"
-        class="flex items-center text-blue-200 hover:text-white"
+        class="flex lg:hidden items-center text-blue-200 hover:text-white mx-2"
       >
-        <Icon name="bars" size={24} />
+        <Icon name="bars" size={30} />
       </button>
-    </div>
-    <div
-      id="menu"
-      class="w-full flex-grow lg:flex lg:items-center lg:w-auto hidden"
-    >
-      <div class="text-sm lg:flex-grow">
-        <a
-          href="/"
-          class="block mt-4 lg:inline-block lg:mt-0 text-blue-200 hover:text-white mr-4"
-        >
-          Home
-        </a>
-        <a
-          href="/about"
-          class="block mt-4 lg:inline-block lg:mt-0 text-blue-200 hover:text-white mr-4"
-        >
-          About
-        </a>
-        <a
-          href="/contact"
-          class="block mt-4 lg:inline-block lg:mt-0 text-blue-200 hover:text-white"
-        >
-          Contact
-        </a>
-      </div>
-      <div>
-        <a
-          href="/search"
-          class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-blue-500 hover:bg-white mt-4 lg:mt-0"
-          >Search</a
-        >
-      </div>
     </div>
   </div>
 </nav>
-<script>
-  document.getElementById("burger")?.addEventListener("click", function () {
-    document.getElementById("menu")?.classList.toggle("hidden");
-  });
-
-  const result = fetch("/api/cart")
-    .then((res) => res.json())
-    .then((data) => {
-      console.log("!!!!! ", data);
-    })
-    .catch((err) => {
-      console.error("!!!! ", err);
-    });
-</script>

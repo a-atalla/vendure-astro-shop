@@ -1,0 +1,21 @@
+---
+import { Icon } from "astro-icon/components";
+---
+
+<div data-controller="cart">
+  <button
+    class="relative flex items-center text-blue-200 hover:text-white mx-2"
+    onclick="toggleCart()"
+  >
+    <Icon name="bag" size={24} />
+    <span
+      data-cart-target="count"
+      class="absolute -top-2 left-3 hidden bg-red-500 text-white text-sm rounded-full w-6 h-6 items-center justify-center"
+    ></span>
+  </button>
+  <aside
+    class="hidden absolute z-50 left-0 right-0 top-0 bottom-0 h-screen w-screen bg-black bg-opacity-50 justify-center items-center"
+  >
+    cart test
+  </aside>
+</div>
