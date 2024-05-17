@@ -9,8 +9,6 @@ const res = await sdk.listCollections({
   options: { take: 12 },
 });
 const collections = res.collections.items as Array<Collection>;
-const res1 = await sdk.getActiveOrder({}, { astroCookies: Astro.cookies });
-console.log({ res1 });
 ---
 
 <BaseLayout title="Home" description="Vendure astro storefront">

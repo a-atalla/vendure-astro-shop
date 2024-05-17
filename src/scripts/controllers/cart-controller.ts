@@ -1,8 +1,21 @@
 import { Controller } from "@hotwired/stimulus";
+import type { Order } from "~/graphql/_generated";
 
 export default class extends Controller {
 	static targets = ["count"];
-	static values = { cart: {} };
+	static values = {
+		cart: Object,
+	};
+
+	// typescript declarations
+	// targets
+	declare readonly hasCountTarget: boolean;
+	declare readonly countTarget: HTMLElement;
+	declare readonly countTargets: HTMLElement[];
+
+	// values
+	declare cartValue: Partial<Order>;
+	declare readonly hasCartValue: boolean;
 
 	connect() {
 		this.getCart();
@@ -11,12 +24,9 @@ export default class extends Controller {
 	cartValueChanged() {
 		console.log(this.cartValue);
 		if (this.cartValue?.lines) {
-			// toggle class on target
 			this.countTarget.classList.remove("hidden");
 			this.countTarget.classList.add("flex");
-
-			// set the count
-			this.countTarget.innerHTML = this.cartValue.lines.length;
+			this.countTarget.innerHTML = `${this.cartValue.lines.length}`;
 		} else {
 			this.countTarget.classList.remove("flex");
 			this.countTarget.classList.add("hidden");
