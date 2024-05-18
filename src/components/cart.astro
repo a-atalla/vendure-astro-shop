@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import CartItemTemplate from "./cart-item-template.astro";
 ---
 
 <div data-controller="cart">
@@ -53,59 +54,20 @@ import { Icon } from "astro-icon/components";
                     role="list"
                     class="-my-6 divide-y divide-gray-200"
                   >
-                    <template data-cart-target="lineItemTemplate">
-                      <li class="py-6 flex">
-                        <div
-                          class="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden"
-                        >
-                          <img
-                            id="lineItemImage"
-                            src=""
-                            alt="Balloon Chair"
-                            class="w-full h-full object-center object-cover"
-                          />
-                        </div><div class="ml-4 flex-1 flex flex-col">
-                          <div>
-                            <div class="flex justify-between text-base font-medium text-gray-900">
-                              <h3>
-                                <a href="/products/balloon-chair" id="lineItemName"></a>
-                              </h3><p class="ml-4" id="lineItemPrice">$price</p>
-                            </div>
-                          </div><div class="flex-1 flex items-center text-sm">
-                            <form method="get" action="/">
-                              <label for="lineItemQuantity" class="mr-2">Quantity</label>
-                              <input
-                                class="h-6 border border-gray-300 rounded"
-                                id="lineItemQuantity"
-                                type="number"
-                                min="1"
-                                max="999999"
-                              />
-                            </form><div class="flex-1"></div><div class="flex">
-                              <button
-                                type="submit"
-                                name="removeItem"
-                                class="font-medium text-red-600 hover:text-red-500"
-                              >
-                                <Icon name="trash" class="h-6 w-6" />
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                      
-
-                    </template>
+                    <!-- Cart templates will be injected here -->
                   </ul>
                 </div>
               </div>
             </div>
-            <div class="border-t border-gray-200 py-6 px-4 sm:px-6">
+            <div
+              data-cart-target="footer"
+              class="border-t border-gray-200 py-6 px-4 sm:px-6"
+            >
               <div
                 class="flex justify-between text-base font-medium text-gray-900"
               >
                 <p>Subtotal</p>
-                <p data-cart-target="subTotal">$78.00</p>
+                <p data-cart-target="subTotal"></p>
               </div><p class="mt-0.5 text-sm text-gray-500">
                 Shipping will be calculated at checkout.
               </p><div class="mt-6">
@@ -120,4 +82,13 @@ import { Icon } from "astro-icon/components";
       </div>
     </aside>
   </section>
+
+  <template data-cart-target="emptyTemplate">
+    <div class="mt-8">
+      <div class="flex items-center justify-center h-48 text-xl text-gray-400">
+        Your cart is empty
+      </div>
+    </div>
+  </template>
+  <CartItemTemplate />
 </div>

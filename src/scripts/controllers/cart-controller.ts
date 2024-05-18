@@ -9,6 +9,8 @@ export default class extends Controller {
 		"itemList",
 		"subTotal",
 		"lineItemTemplate",
+		"footer",
+		"emptyTemplate",
 	];
 	static values = {
 		cart: Object,
@@ -21,10 +23,11 @@ export default class extends Controller {
 	// targets declaration
 	declare readonly countTarget: HTMLElement;
 	declare readonly cartContainerTarget: HTMLElement;
-	declare readonly itemTarget: HTMLElement;
 	declare readonly itemListTarget: HTMLElement;
 	declare readonly subTotalTarget: HTMLElement;
 	declare readonly lineItemTemplateTarget: HTMLElement;
+	declare readonly footerTarget: HTMLElement;
+	declare readonly emptyTemplateTarget: HTMLElement;
 
 	connect() {
 		this.getCart();
@@ -32,7 +35,7 @@ export default class extends Controller {
 
 	async getCart() {
 		const res = await fetch("/api/cart");
-		this.cartValue = await res.json();
+		this.cartValue = (await res.json()) || {};
 	}
 
 	openCart() {
@@ -57,9 +60,13 @@ export default class extends Controller {
 				this.cartValue.subTotalWithTax,
 				this.cartValue.currencyCode as CurrencyCode,
 			);
+			this.footerTarget.classList.remove("hidden");
 		} else {
 			this.countTarget.classList.remove("flex");
 			this.countTarget.classList.add("hidden");
+
+			this.itemListTarget.innerHTML = this.emptyTemplateTarget.innerHTML;
+			this.footerTarget.classList.add("hidden");
 		}
 
 		const html = this.lineItemTemplateTarget.innerHTML;
