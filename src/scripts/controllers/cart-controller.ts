@@ -102,6 +102,24 @@ export default class extends Controller {
 		) as HTMLSelectElement;
 		qtySelector.value = line.quantity.toString();
 
+		const removeBtn = lineItem.querySelector(
+			"#lineItemRemoveBtn",
+		) as HTMLElement;
+		// add data-line-id attribute to the remove button
+		removeBtn.setAttribute("data-line-id", line.id);
+
 		return lineItem;
+	}
+
+	async deleteLineItem(event: Event) {
+		// extcract data-line-id from currentTarget
+		const lineId = (event.currentTarget as HTMLElement).dataset.lineId;
+		console.log(lineId);
+		const res = await fetch("/api/cart", {
+			method: "DELETE",
+			body: JSON.stringify({ lineId }),
+		});
+		const data = await res.json();
+		this.cartValue = data;
 	}
 }

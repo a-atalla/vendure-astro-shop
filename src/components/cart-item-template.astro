@@ -30,11 +30,15 @@ import { Icon } from "astro-icon/components";
             min="1"
             max="99"
           />
-        </form><div class="flex-1"></div><div class="flex">
+        </form>
+        <div class="flex-1"></div>
+        <div class="flex">
           <button
             type="submit"
             name="removeItem"
             class="font-medium text-red-600 hover:text-red-500"
+            data-action="click->cart#deleteLineItem"
+            id="lineItemRemoveBtn"
           >
             <Icon name="trash" class="h-6 w-6" />
           </button>
