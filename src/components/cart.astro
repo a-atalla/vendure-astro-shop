@@ -5,7 +5,7 @@ import { Icon } from "astro-icon/components";
 <div data-controller="cart">
   <button
     class="relative flex items-center text-blue-200 hover:text-white mx-2"
-    onclick="toggleCart()"
+    data-action="click->cart#openCart"
   >
     <Icon name="bag" size={24} />
     <span
@@ -13,9 +13,111 @@ import { Icon } from "astro-icon/components";
       class="absolute hidden first-letter:-top-2 left-3 bg-red-500 text-white text-sm rounded-full w-6 h-6 items-center justify-center"
     ></span>
   </button>
-  <aside
+  <section
+    data-cart-target="cartContainer"
     class="hidden absolute z-50 left-0 right-0 top-0 bottom-0 h-screen w-screen bg-black bg-opacity-50 justify-center items-center"
   >
-    cart test
-  </aside>
+    <aside class="bg-white absolute top-0 right-0 bottom-0 w-full lg:w-[450px]">
+      <div class="fixed inset-y-0 right-0 max-w-full flex">
+        <div class="w-screen max-w-md translate-x-0">
+          <div
+            class="h-full flex flex-col bg-white shadow-xl overflow-y-scroll"
+          >
+            <div class="flex-1 py-6 overflow-y-auto px-4 sm:px-6">
+              <div class="flex items-start justify-between">
+                <h2
+                  class="text-lg font-medium text-gray-900"
+                  id="headlessui-dialog-title-:r7:"
+                  data-headlessui-state="open"
+                >
+                  Shopping cart
+                </h2>
+
+                <div class="ml-3 h-7 flex items-center">
+                  <button
+                    data-action="click->cart#closeCart"
+                    type="button"
+                    class="-m-2 p-2 text-gray-400 hover:text-gray-500"
+                    tabindex="0"
+                  >
+                    <span class="sr-only">Close panel</span>
+                    <Icon name="close" size={32} />
+                  </button>
+                </div>
+              </div>
+
+              <div class="mt-8">
+                <div class="flow-root">
+                  <ul
+                    data-cart-target="itemList"
+                    role="list"
+                    class="-my-6 divide-y divide-gray-200"
+                  >
+                    <template data-cart-target="lineItemTemplate">
+                      <li class="py-6 flex">
+                        <div
+                          class="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden"
+                        >
+                          <img
+                            id="lineItemImage"
+                            src=""
+                            alt="Balloon Chair"
+                            class="w-full h-full object-center object-cover"
+                          />
+                        </div><div class="ml-4 flex-1 flex flex-col">
+                          <div>
+                            <div class="flex justify-between text-base font-medium text-gray-900">
+                              <h3>
+                                <a href="/products/balloon-chair" id="lineItemName"></a>
+                              </h3><p class="ml-4" id="lineItemPrice">$price</p>
+                            </div>
+                          </div><div class="flex-1 flex items-center text-sm">
+                            <form method="get" action="/">
+                              <label for="lineItemQuantity" class="mr-2">Quantity</label>
+                              <input
+                                class="h-6 border border-gray-300 rounded"
+                                id="lineItemQuantity"
+                                type="number"
+                                min="1"
+                                max="999999"
+                              />
+                            </form><div class="flex-1"></div><div class="flex">
+                              <button
+                                type="submit"
+                                name="removeItem"
+                                class="font-medium text-red-600 hover:text-red-500"
+                              >
+                                <Icon name="trash" class="h-6 w-6" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                      
+
+                    </template>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="border-t border-gray-200 py-6 px-4 sm:px-6">
+              <div
+                class="flex justify-between text-base font-medium text-gray-900"
+              >
+                <p>Subtotal</p>
+                <p data-cart-target="subTotal">$78.00</p>
+              </div><p class="mt-0.5 text-sm text-gray-500">
+                Shipping will be calculated at checkout.
+              </p><div class="mt-6">
+                <a
+                  class="flex justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary-600 hover:bg-primary-700"
+                  href="/checkout">Checkout</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </section>
 </div>
