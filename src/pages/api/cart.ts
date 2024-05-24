@@ -22,3 +22,18 @@ export const DELETE: APIRoute = async ({ cookies, request }) => {
 
 	return new Response(JSON.stringify({ cart: res.removeOrderLine }));
 };
+
+export const PATCH: APIRoute = async ({ cookies, request }) => {
+	const data = await request.json();
+	const res = await sdk.adjustOrderLine(
+		{
+			quantity: data.quantity,
+			orderLineId: data.lineId,
+		},
+		{
+			astroCookies: cookies,
+		},
+	);
+
+	return new Response(JSON.stringify({ cart: res.adjustOrderLine }));
+};

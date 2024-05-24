@@ -102,13 +102,11 @@ export default class extends Controller {
 			"#lineItemQuantity",
 		) as HTMLSelectElement;
 		qtySelector.value = line.quantity.toString();
-
+		qtySelector.setAttribute("data-line-id", line.id);
 		const removeBtn = lineItem.querySelector(
 			"#lineItemRemoveBtn",
 		) as HTMLElement;
-		// add data-line-id attribute to the remove button
 		removeBtn.setAttribute("data-line-id", line.id);
-
 		return lineItem;
 	}
 
@@ -122,5 +120,17 @@ export default class extends Controller {
 		});
 		const data = await res.json();
 		this.cartValue = data;
+	}
+
+	async updateCartLine(event: Event) {
+		const lineId = (event.target as HTMLElement).dataset.lineId as string;
+		const quantity = (event.target as HTMLSelectElement).value as string;
+		const res = await fetch("/api/cart", {
+			method: "PATCH",
+			body: JSON.stringify({
+				lineId: Number.parseInt(lineId, 10),
+				quantity: Number.parseInt(quantity, 10),
+			}),
+		});
 	}
 }
