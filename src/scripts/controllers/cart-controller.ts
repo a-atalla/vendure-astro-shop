@@ -34,8 +34,12 @@ export default class extends Controller {
 	}
 
 	async getCart() {
-		const res = await fetch("/api/cart");
-		this.cartValue = (await res.json()) || {};
+		try {
+			const res = await fetch("/api/cart");
+			this.cartValue = (await res.json()) || {};
+		} catch (error) {
+			console.error("Could not fetch the cart: ", error);
+		}
 	}
 
 	openCart() {
@@ -51,7 +55,7 @@ export default class extends Controller {
 	}
 
 	cartValueChanged() {
-		if (this.cartValue?.lines) {
+		if (this.cartValue?.lines && this.cartValue.lines.length > 0) {
 			this.countTarget.classList.remove("hidden");
 			this.countTarget.classList.add("flex");
 			this.countTarget.innerHTML = `${this.cartValue.lines.length}`;
@@ -61,21 +65,18 @@ export default class extends Controller {
 				this.cartValue.currencyCode as CurrencyCode,
 			);
 			this.footerTarget.classList.remove("hidden");
-		} else {
-			this.countTarget.classList.remove("flex");
-			this.countTarget.classList.add("hidden");
 
-			this.itemListTarget.innerHTML = this.emptyTemplateTarget.innerHTML;
-			this.footerTarget.classList.add("hidden");
-		}
-
-		const html = this.lineItemTemplateTarget.innerHTML;
-		if (this.cartValue?.lines) {
+			const html = this.lineItemTemplateTarget.innerHTML;
 			this.itemListTarget.innerHTML = "";
 			for (const line of this.cartValue.lines) {
 				const lineItem = this.renderLineItem(html, line);
 				this.itemListTarget.appendChild(lineItem);
 			}
+		} else {
+			this.countTarget.classList.remove("flex");
+			this.countTarget.classList.add("hidden");
+			this.itemListTarget.innerHTML = this.emptyTemplateTarget.innerHTML;
+			this.footerTarget.classList.add("hidden");
 		}
 	}
 
