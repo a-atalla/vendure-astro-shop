@@ -11,6 +11,10 @@ export default defineConfig({
   vite: {
     ssr: {
       noExternal: "graphql"
+    }, define: {
+      // to make env variables work on cloudflare pages we need to redefine them here
+      "process.env.VENDURE_SHOP_API": JSON.stringify(process.env.VENDURE_SHOP_API),
+      "process.env.VENDURE_CHANNEL_TOKEN": JSON.stringify(process.env.VENDURE_CHANNEL_TOKEN),
     }
   },
   adapter: cloudflare(),

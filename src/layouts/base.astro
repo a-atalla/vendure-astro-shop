@@ -1,7 +1,7 @@
 ---
 import Footer from "~/components/footer.astro";
 import Navbar from "~/components/navbar.astro";
-import type { Seller } from "~/graphql/_generated";
+import type { Channel, Seller } from "~/graphql/_generated";
 import { sdk } from "~/graphql/sdk";
 type Props = {
   title: string;
@@ -9,10 +9,14 @@ type Props = {
 };
 const { title, description } = Astro.props;
 
-const res = await sdk.getActiveChannel(undefined, {
-  astroCookies: Astro.cookies,
-});
-const activeChannel = res.activeChannel;
+let activeChannel: Channel | undefined;
+
+try {
+  const res = await sdk.getActiveChannel(undefined, {
+    astroCookies: Astro.cookies,
+  });
+  activeChannel = res.activeChannel as Channel;
+} catch (err) {}
 ---
 
 <html lang="en">
@@ -26,7 +30,7 @@ const activeChannel = res.activeChannel;
     <title>Vendur - {title}</title>
   </head>
   <body class="flex flex-col h-screen">
-    <Navbar seller={activeChannel.seller as Seller} />
+    <Navbar seller={activeChannel?.seller as Seller} />
     <main class="flex-1">
       <slot />
     </main>
