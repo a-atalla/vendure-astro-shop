@@ -1,13 +1,21 @@
 ---
 import { Icon } from "astro-icon/components";
 import Cart from "~/components/cart.astro";
+import type { Seller } from "~/graphql/_generated";
+
+type Props = {
+  seller: Seller;
+};
+
+const { seller } = Astro.props;
 ---
 
-<!-- tailwind responsive navbar with burger button opn mobile -->
 <nav>
   <div class="flex items-center justify-between flex-wrap bg-blue-500 p-6">
     <div class="flex items-center flex-shrink-0 text-white mr-6">
-      <a href="/" class="font-semibold text-xl tracking-tight">Site Title</a>
+      <a href="/" class="font-semibold text-xl tracking-tight"
+        >{seller.customFields?.siteTitle || "Seller Site Title"}</a
+      >
     </div>
 
     <div class="flex justify-center items-center">

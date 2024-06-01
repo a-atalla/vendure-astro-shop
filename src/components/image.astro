@@ -1,0 +1,29 @@
+---
+import type { Asset } from "~/graphql/_generated";
+
+type Props = {
+  image: Asset;
+  preset: "tiny" | "thumb" | "small" | "medium" | "large";
+  alt?: string;
+  classes?: string;
+};
+
+const { image, preset, alt, classes } = Astro.props;
+---
+
+<!-- https://docs.vendure.io/guides/storefront/product-detail/#displaying-images -->
+<picture>
+  <source
+    type="image/avif"
+    srcset={image.preview + `?preset=${preset}&format=avif`}
+  />
+  <source
+    type="image/webp"
+    srcset={image.preview + `?preset=${preset}&format=webp`}
+  />
+  <img
+    src={image.preview + `?preset=${preset}&format=jpg`}
+    alt={alt || image.name}
+    class={classes}
+  />
+</picture>

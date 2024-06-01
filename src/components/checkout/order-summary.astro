@@ -1,6 +1,12 @@
 ---
 import { Icon } from "astro-icon/components";
-import type { CurrencyCode, Order, OrderLine } from "~/graphql/_generated";
+import Image from "~/components/image.astro";
+import type {
+  Asset,
+  CurrencyCode,
+  Order,
+  OrderLine,
+} from "~/graphql/_generated";
 import { formatPrice } from "~/utils";
 
 type Props = {
@@ -19,10 +25,11 @@ const { order } = Astro.props;
           <li class="py-6 flex">
             <>
               <div class="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden">
-                <img
-                  src={line.featuredAsset?.preview}
+                <Image
+                  image={line.featuredAsset as Asset}
+                  preset="tiny"
                   alt="Camera Lens"
-                  class="w-full h-full object-center object-cover"
+                  classes="w-full h-full object-center object-cover"
                 />
               </div>
               <div class="ml-4 flex-1 flex flex-col">

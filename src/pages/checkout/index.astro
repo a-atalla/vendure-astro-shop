@@ -324,7 +324,7 @@ if (Astro.request.method === "POST") {
           </div>
         </div>
       </div>
-      <OrderSummary order={order} />
+      <OrderSummary order={order as Order} />
     </div>
   </div>
 </BaseLayout>

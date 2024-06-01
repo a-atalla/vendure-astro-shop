@@ -3097,10 +3097,16 @@ export type SearchResultSortParameter = {
 export type Seller = Node & {
   __typename?: 'Seller';
   createdAt: Scalars['DateTime']['output'];
-  customFields?: Maybe<Scalars['JSON']['output']>;
+  customFields?: Maybe<SellerCustomFields>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
+};
+
+export type SellerCustomFields = {
+  __typename?: 'SellerCustomFields';
+  logo?: Maybe<Asset>;
+  siteTitle?: Maybe<Scalars['String']['output']>;
 };
 
 export type SetCustomerForOrderResult = AlreadyLoggedInError | EmailAddressConflictError | GuestCheckoutError | NoActiveOrderError | Order;
@@ -3388,7 +3394,7 @@ export type Zone = Node & {
 export type GetActiveChannelQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetActiveChannelQuery = { __typename?: 'Query', activeChannel: { __typename?: 'Channel', id: string, defaultCurrencyCode: CurrencyCode } };
+export type GetActiveChannelQuery = { __typename?: 'Query', activeChannel: { __typename?: 'Channel', id: string, defaultCurrencyCode: CurrencyCode, seller?: { __typename?: 'Seller', id: string, name: string, customFields?: { __typename?: 'SellerCustomFields', siteTitle?: string | null, logo?: { __typename?: 'Asset', source: string, preview: string } | null } | null } | null } };
 
 export type ListTopLevelCollectionsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3631,6 +3637,17 @@ export const GetActiveChannelDocument = gql`
   activeChannel {
     id
     defaultCurrencyCode
+    seller {
+      id
+      name
+      customFields {
+        siteTitle
+        logo {
+          source
+          preview
+        }
+      }
+    }
   }
 }
     `;

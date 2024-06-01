@@ -3366,10 +3366,15 @@ input SearchResultSortParameter {
 
 type Seller implements Node {
   createdAt: DateTime!
-  customFields: JSON
+  customFields: SellerCustomFields
   id: ID!
   name: String!
   updatedAt: DateTime!
+}
+
+type SellerCustomFields {
+  logo: Asset
+  siteTitle: String
 }
 
 union SetCustomerForOrderResult = AlreadyLoggedInError | EmailAddressConflictError | GuestCheckoutError | NoActiveOrderError | Order

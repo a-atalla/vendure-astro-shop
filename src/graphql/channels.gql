@@ -1,6 +1,18 @@
 query getActiveChannel {
-    activeChannel {
-        id
-        defaultCurrencyCode
+  activeChannel {
+    id
+    defaultCurrencyCode
+    seller {
+      id
+      name
+
+      customFields {
+        siteTitle
+        logo {
+          source
+          preview
+        }
+      }
     }
+  }
 }

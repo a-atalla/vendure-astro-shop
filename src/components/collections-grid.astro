@@ -1,5 +1,6 @@
 ---
-import type { Collection, CollectionList } from "~/graphql/_generated";
+import Image from "~/components/image.astro";
+import type { Asset, Collection, CollectionList } from "~/graphql/_generated";
 
 type Props = {
   collections: Array<Collection>;
@@ -16,10 +17,10 @@ const { collections } = Astro.props;
           return (
             <div class="bg-white shadow-md rounded-lg p-2 overflow-hidden">
               <a href={`/collections/${collection.slug}`}>
-                <img
-                  src={collection.featuredAsset?.preview}
-                  alt="image"
-                  class="cursor-pointer w-full h-48 object-cover object-center hover:scale-105 transition-transform duration-200"
+                <Image
+                  image={collection.featuredAsset as Asset}
+                  preset="small"
+                  classes="cursor-pointer w-full h-48 object-cover object-center hover:scale-105 transition-transform duration-200"
                 />
               </a>
               <div class="mt-4 text-center">

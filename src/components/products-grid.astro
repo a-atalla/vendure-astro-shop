@@ -1,5 +1,6 @@
 ---
-import type { Product, SearchResult } from "~/graphql/_generated";
+import Image from "~/components/image.astro";
+import type { Asset, Product, SearchResult } from "~/graphql/_generated";
 import { formatPrice } from "~/utils";
 
 type Props = {
@@ -18,10 +19,10 @@ const { products } = Astro.props;
         return (
           <a class="flex flex-col" href={`/products/${product.slug}`}>
             <>
-              <img
-                class="rounded-xl flex-grow object-cover aspect-[7/8]"
-                alt=""
-                src={product.productAsset?.preview}
+              <Image
+                classes="rounded-xl flex-grow object-cover aspect-[7/8]"
+                image={product.productAsset as Asset}
+                preset="small"
               />
               <div class="h-2" />
               <div class="text-sm text-gray-700">{product.productName}</div>

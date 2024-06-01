@@ -1,5 +1,6 @@
 ---
-import type { ProductVariant } from "~/graphql/_generated";
+import Image from "~/components/image.astro";
+import type { Asset, ProductVariant } from "~/graphql/_generated";
 import { sdk } from "~/graphql/sdk";
 import BaseLayout from "~/layouts/base.astro";
 import { formatPrice } from "~/utils";
@@ -60,10 +61,11 @@ if (Astro.request.method === "POST") {
       <div class="w-full max-w-2xl mx-auto sm:block lg:max-w-none">
         <span class="rounded-md overflow-hidden"
           ><div class="w-full h-full object-center object-cover rounded-lg">
-            <img
-              src={`${product?.featuredAsset?.preview}?w=800`}
+            <Image
+              image={product?.featuredAsset as Asset}
+              preset="medium"
               alt={product?.name}
-              class="w-full h-full object-center object-cover rounded-lg"
+              classes="w-full h-full object-center object-cover rounded-lg"
             />
           </div></span
         >
