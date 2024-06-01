@@ -1,0 +1,330 @@
+---
+import { sdk } from "~/graphql/sdk";
+import BaseLayout from "~/layouts/base.astro";
+import OrderSummary from "~/components/checkout/order-summary.astro";
+import { formatPrice } from "~/utils";
+import type { Order } from "~/graphql/_generated";
+import { OrderFormValidator } from "~/validators";
+
+const res = await sdk.getActiveOrder(undefined, {
+  astroCookies: Astro.cookies,
+});
+
+const order = res.activeOrder;
+
+if (!order || order?.lines.length === 0) {
+  return Astro.redirect("/");
+}
+
+const res1 = await sdk.getShippingMethods(undefined, {
+  astroCookies: Astro.cookies,
+});
+const res2 = await sdk.getPaymentMethods(undefined, {
+  astroCookies: Astro.cookies,
+});
+const paymentMethods = res2.eligiblePaymentMethods;
+
+const activeShippingMethod = order.shippingLines[0]?.shippingMethod.id;
+
+const shippingMethods = res1.eligibleShippingMethods;
+
+if (Astro.request.method === "POST") {
+  const body = await Astro.request.formData();
+  const data = Object.fromEntries(body.entries());
+  const {
+    success,
+    data: cleanData,
+    error,
+  } = OrderFormValidator.safeParse(data);
+  if (success) {
+    await sdk.setShippingMethod(
+      { id: cleanData.shippingMethod as string },
+      { astroCookies: Astro.cookies }
+    );
+
+    await sdk.setCustomerForOrder(
+      {
+        input: {
+          emailAddress: cleanData.emailAddress,
+          firstName: cleanData.firstName,
+          lastName: cleanData.lastName,
+        },
+      },
+      { astroCookies: Astro.cookies }
+    );
+
+    await sdk.setOrderShippingAddress(
+      {
+        input: {
+          countryCode: cleanData.countryCode,
+          city: cleanData.city,
+          streetLine1: cleanData.streetLine1,
+          phoneNumber: cleanData.phoneNumber,
+        },
+      },
+      { astroCookies: Astro.cookies }
+    );
+
+    await sdk.transitionToState(
+      { state: "ArrangingPayment" },
+      { astroCookies: Astro.cookies }
+    );
+    const result = await sdk.addPaymentToOrder(
+      {
+        input: {
+          method: cleanData.paymentMethod,
+          metadata: {},
+        },
+      },
+      { astroCookies: Astro.cookies }
+    );
+
+    return Astro.redirect("/checkout/confirm");
+  }
+}
+---
+
+<BaseLayout title="Checkout" description="Checkout page">
+  <div class="lg:max-w-7xl max-w-2xl mx-auto pt-8 pb-24 px-4 sm:px-6 lg:px-8">
+    <h2 class="sr-only">Checkout</h2><nav
+      aria-label="cart.progress"
+      class="hidden sm:block pb-8 mb-8 border-b"
+    >
+      <ol role="list" class="flex space-x-4 justify-center">
+        <li class="flex items-center">
+          <span aria-current="page" class="text-primary-600">Shipping</span><svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+            class="w-5 h-5 text-gray-300 ml-4"
+            ><path
+              fill-rule="evenodd"
+              d="M16.28 11.47a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 01-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 011.06-1.06l7.5 7.5z"
+              clip-rule="evenodd"></path></svg
+          >
+        </li><li class="flex items-center">
+          <span>Payment</span><svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+            class="w-5 h-5 text-gray-300 ml-4"
+            ><path
+              fill-rule="evenodd"
+              d="M16.28 11.47a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 01-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 011.06-1.06l7.5 7.5z"
+              clip-rule="evenodd"></path></svg
+          >
+        </li><li class="flex items-center"><span>Confirmation</span></li>
+      </ol>
+    </nav>
+
+    <div class="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16">
+      <div class="">
+        <div>
+          <div>
+            <h2 class="text-lg font-medium text-gray-900">
+              Contact information
+            </h2>
+
+            <form method="post">
+              <div class="mt-4">
+                <label
+                  for="emailAddress"
+                  class="block text-sm font-medium text-gray-700"
+                  >Email address</label
+                ><div class="mt-1">
+                  <input
+                    type="email"
+                    id="emailAddress"
+                    name="emailAddress"
+                    autocomplete="email"
+                    class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                    value=""
+                  />
+                </div>
+              </div><div
+                class="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4"
+              >
+                <div>
+                  <label
+                    for="firstName"
+                    class="block text-sm font-medium text-gray-700"
+                    >First Name</label
+                  ><div class="mt-1">
+                    <input
+                      type="text"
+                      id="firstName"
+                      name="firstName"
+                      autocomplete="given-name"
+                      class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                      value=""
+                    />
+                  </div>
+                </div><div>
+                  <label
+                    for="lastName"
+                    class="block text-sm font-medium text-gray-700"
+                    >Last Name</label
+                  ><div class="mt-1">
+                    <input
+                      type="text"
+                      id="lastName"
+                      name="lastName"
+                      autocomplete="family-name"
+                      class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                      value=""
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-10 border-t border-gray-200 pt-10">
+                <h2 class="text-lg font-medium text-gray-900">
+                  Shipping information
+                </h2>
+              </div><div
+                class="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4"
+              >
+                <div>
+                  <label
+                    for="city"
+                    class="block text-sm font-medium text-gray-700">City</label
+                  ><div class="mt-1">
+                    <input
+                      type="text"
+                      name="city"
+                      id="city"
+                      autocomplete="address-level2"
+                      class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                      value=""
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    for="countryCode"
+                    class="block text-sm font-medium text-gray-700"
+                    >Country</label
+                  >
+                  <div class="mt-1">
+                    <select
+                      id="countryCode"
+                      name="countryCode"
+                      class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                    >
+                      <option value="EG">Egypt</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-4 sm:col-span-2">
+                <label
+                  for="streetLine1"
+                  class="block text-sm font-medium text-gray-700">Address</label
+                ><div class="mt-1">
+                  <input
+                    type="text"
+                    name="streetLine1"
+                    id="streetLine1"
+                    autocomplete="street-address"
+                    class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                    value=""
+                  />
+                </div>
+              </div>
+
+              <div class="mt-4 sm:col-span-2">
+                <label
+                  for="phoneNumber"
+                  class="block text-sm font-medium text-gray-700">Phone</label
+                ><div class="mt-1">
+                  <input
+                    type="text"
+                    name="phoneNumber"
+                    id="phoneNumber"
+                    autocomplete="tel"
+                    class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                    value=""
+                  />
+                </div>
+              </div>
+
+              <div class="mt-10 border-t border-gray-200 pt-10">
+                <label
+                  class="text-lg font-medium text-gray-900"
+                  id="headlessui-label-:r6:"
+                  role="none">Delivery method</label
+                >
+                <div
+                  class="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4"
+                  role="none"
+                >
+                  {
+                    shippingMethods.map((method) => (
+                      <label>
+                        <input
+                          type="radio"
+                          name="shippingMethod"
+                          value={method.id}
+                          checked={method.id === activeShippingMethod}
+                        />
+                        {method.name} -{" "}
+                        {formatPrice(method.price, order.currencyCode)}
+                      </label>
+                    ))
+                  }
+                </div>
+
+                <div class="mt-8">
+                  <label
+                    class="text-lg font-medium text-gray-900"
+                    id="headlessui-label-:r6:"
+                    role="none">Payment method</label
+                  >
+                  <div
+                    class="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4"
+                    role="none"
+                  >
+                    {
+                      paymentMethods.map((method) => (
+                        <label>
+                          <input
+                            type="radio"
+                            name="paymentMethod"
+                            value={method.code}
+                          />
+                          {method.name}
+                        </label>
+                      ))
+                    }
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  class="bg-primary-400 flex w-full items-center justify-center space-x-2 mt-24 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    aria-hidden="true"
+                    class="w-5 h-5"
+                    ><path
+                      fill-rule="evenodd"
+                      d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                  <span>Proceed to payment</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <OrderSummary order={order} />
+    </div>
+  </div>
+</BaseLayout>

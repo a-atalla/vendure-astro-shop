@@ -113,7 +113,6 @@ export default class extends Controller {
 	async deleteLineItem(event: Event) {
 		// extcract data-line-id from currentTarget
 		const lineId = (event.currentTarget as HTMLElement).dataset.lineId;
-		console.log(lineId);
 		const res = await fetch("/api/cart", {
 			method: "DELETE",
 			body: JSON.stringify({ lineId }),

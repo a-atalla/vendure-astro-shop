@@ -3305,6 +3305,7 @@ input SearchInput {
   collectionSlug: String
   facetValueFilters: [FacetValueFilterInput!]
   groupByProduct: Boolean
+  inStock: Boolean
   skip: Int
   sort: SearchResultSortParameter
   take: Int
@@ -3329,6 +3330,7 @@ type SearchResult {
   description: String!
   facetIds: [ID!]!
   facetValueIds: [ID!]!
+  inStock: Boolean!
   price: SearchResultPrice!
   priceWithTax: SearchResultPrice!
   productAsset: SearchResultAsset

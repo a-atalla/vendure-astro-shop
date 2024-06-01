@@ -1,0 +1,106 @@
+---
+import { Icon } from "astro-icon/components";
+import type { CurrencyCode, Order, OrderLine } from "~/graphql/_generated";
+import { formatPrice } from "~/utils";
+
+type Props = {
+  order: Partial<Order>;
+};
+const { order } = Astro.props;
+---
+
+<div class="mt-10 lg:mt-0">
+  <h2 class="text-lg font-medium text-gray-900 mb-4">Order summary</h2><div
+    class="flow-root"
+  >
+    <ul role="list" class="-my-6 divide-y divide-gray-200">
+      {
+        order.lines?.map((line: OrderLine) => (
+          <li class="py-6 flex">
+            <>
+              <div class="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden">
+                <img
+                  src={line.featuredAsset?.preview}
+                  alt="Camera Lens"
+                  class="w-full h-full object-center object-cover"
+                />
+              </div>
+              <div class="ml-4 flex-1 flex flex-col">
+                <>
+                  <div>
+                    <div class="flex justify-between text-base font-medium text-gray-900">
+                      <>
+                        <h3>
+                          <a href="/products/camera-lens">
+                            {line.productVariant.name}
+                          </a>
+                        </h3>
+                        <p class="ml-4">
+                          {formatPrice(
+                            line.linePriceWithTax,
+                            order.currencyCode as CurrencyCode
+                          )}
+                        </p>
+                      </>
+                    </div>
+                  </div>
+                  <div class="flex-1 flex items-center text-sm">
+                    <>
+                      <label for="quantity-11" class="mr-2">
+                        Quantity
+                      </label>
+                      {/* TODO: Call cart controller to update quantities */}
+                      <input
+                        class="h-6 w-16 border border-gray-300 rounded"
+                        id="lineItemQuantity"
+                        type="number"
+                        disabled
+                        value={line.quantity}
+                      />
+
+                      <div class="flex-1" />
+                      <div class="flex">
+                        {/* TODO: Call cart controller to remove line */}
+                        <button
+                          type="submit"
+                          name="removeItem"
+                          class="font-medium text-red-600 hover:text-red-500 disabled:text-gray-300"
+                          id="lineItemRemoveBtn"
+                          disabled
+                        >
+                          <Icon name="trash" class="h-6 w-6" />
+                        </button>
+                      </div>
+                    </>
+                  </div>
+                </>
+              </div>
+            </>
+          </li>
+        ))
+      }
+    </ul>
+  </div><dl class="border-t mt-6 border-gray-200 py-6 space-y-6">
+    <div class="flex items-center justify-between">
+      <dt class="text-sm">Subtotal</dt><dd
+        class="text-sm font-medium text-gray-900"
+      >
+        {formatPrice(order.subTotalWithTax, order.currencyCode as CurrencyCode)}
+      </dd>
+    </div><div class="flex items-center justify-between">
+      <dt class="text-sm">Shipping</dt><dd
+        class="text-sm font-medium text-gray-900"
+      >
+        {formatPrice(order.shippingWithTax, order.currencyCode as CurrencyCode)}
+      </dd>
+    </div><div
+      class="flex items-center justify-between border-t border-gray-200 pt-6"
+    >
+      <dt class="text-base font-medium">Total</dt><dd
+        class="text-base font-medium text-gray-900"
+      >
+        {formatPrice(order.totalWithTax, order.currencyCode as CurrencyCode)}
+      </dd>
+    </div>
+  </dl>
+</div>

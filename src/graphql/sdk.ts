@@ -2,9 +2,9 @@ import type { AstroCookies } from "astro";
 import { type DocumentNode, print } from "graphql";
 import { getSdk } from "~/graphql/_generated";
 
-const API_URL = "https://demo.vendure.io/shop-api"; //import.meta.env.API_URL;
+const API_URL = import.meta.env.VENDURE_SHOP_API;
 const AUTH_TOKEN_SESSION_KEY = "vendure-auth-token";
-const VENDURE_CHANNEL_TOKEN = null; //"default-channel-token";
+const VENDURE_CHANNEL_TOKEN = import.meta.env.VENDURE_CHANNEL_TOKEN;
 
 export interface QueryOptions {
 	// headers?: Headers;
@@ -31,6 +31,7 @@ async function sendQuery<Response, Variables = {}>(options: {
 	if (VENDURE_CHANNEL_TOKEN) {
 		headers.append("vendure-token", VENDURE_CHANNEL_TOKEN);
 	}
+
 	const vendureAuthToken = options.astroCookies?.get(AUTH_TOKEN_SESSION_KEY);
 	if (vendureAuthToken) {
 		headers.append("Authorization", `Bearer ${vendureAuthToken.value}`);

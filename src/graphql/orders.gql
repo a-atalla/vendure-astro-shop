@@ -30,6 +30,8 @@ fragment ActiveOrder on Order {
   }
   shippingLines {
     shippingMethod {
+      id
+      name
       description
     }
     priceWithTax
@@ -70,6 +72,77 @@ mutation removeItemFromOrder($orderLineId: ID!) {
 
 mutation adjustOrderLine($orderLineId: ID!, $quantity: Int!) {
   adjustOrderLine(orderLineId: $orderLineId, quantity: $quantity) {
+    ...ActiveOrder
+    ... on ErrorResult {
+      errorCode
+      message
+    }
+  }
+}
+
+mutation setCustomerForOrder($input: CreateCustomerInput!) {
+  setCustomerForOrder(input: $input) {
+    ...ActiveOrder
+    ... on ErrorResult {
+      errorCode
+      message
+    }
+  }
+}
+
+mutation setOrderShippingAddress($input: CreateAddressInput!) {
+  setOrderShippingAddress(input: $input) {
+    ...ActiveOrder
+    ... on ErrorResult {
+      errorCode
+      message
+    }
+  }
+}
+
+query getShippingMethods {
+  eligibleShippingMethods {
+    id
+    name
+    price
+    description
+  }
+}
+
+mutation setShippingMethod($id: [ID!]!) {
+  setOrderShippingMethod(shippingMethodId: $id) {
+    ...ActiveOrder
+    ... on ErrorResult {
+      errorCode
+      message
+    }
+  }
+}
+
+query getPaymentMethods {
+  eligiblePaymentMethods {
+    id
+    name
+    code
+    isEligible
+  }
+}
+
+mutation transitionToState($state: String!) {
+  transitionOrderToState(state: $state) {
+    ...ActiveOrder
+    ... on OrderStateTransitionError {
+      errorCode
+      message
+      transitionError
+      fromState
+      toState
+    }
+  }
+}
+
+mutation addPaymentToOrder($input: PaymentInput!) {
+  addPaymentToOrder(input: $input) {
     ...ActiveOrder
     ... on ErrorResult {
       errorCode
