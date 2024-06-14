@@ -1,0 +1,136 @@
+---
+import type { CurrencyCode } from "~/graphql/_generated";
+import { sdk } from "~/graphql/sdk";
+import BaseLayout from "~/layouts/base.astro";
+import { formatPrice } from "~/utils";
+
+const { code } = Astro.params;
+const res = await sdk.getOrderByCode({ code: code as string });
+const order = res.orderByCode;
+---
+
+<BaseLayout title="Checkout Complete" description="Checkout confirm page">
+  <div class="lg:max-w-3xl mx-auto max-w-2xl pt-8 pb-24 px-4 sm:px-6 lg:px-8">
+    <h2 class="sr-only">Checkout Complete</h2>
+    <div class="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16">
+      <div class="lg:col-span-2">
+        <div>
+          <h2
+            class="text-3xl flex items-center space-x-2 sm:text-5xl font-light tracking-tight text-gray-900 my-8"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              aria-hidden="true"
+              class="text-green-600 w-8 h-8 sm:w-12 sm:h-12"
+              ><path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path></svg
+            ><span>Order summary</span>
+          </h2><p class="text-lg text-gray-700">
+            Your order has been received! <span class="font-bold">{code}</span>
+          </p><div class="mt-12">
+            <div class="mb-6">
+              <div class="flow-root">
+                <ul role="list" class="-my-6 divide-y divide-gray-200">
+                  {
+                    order?.lines?.map((line) => (
+                      <li class="py-6 flex">
+                        <>
+                          <div class="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden">
+                            <img
+                              src={`${line.featuredAsset?.preview}?preset=thumb`}
+                              alt="Balloon Chair"
+                              class="w-full h-full object-center object-cover"
+                            />
+                          </div>
+                          <div class="ml-4 flex-1 flex flex-col">
+                            <>
+                              <div>
+                                <div class="flex justify-between text-base font-medium text-gray-900">
+                                  <>
+                                    <h3>
+                                      <a href="/products/balloon-chair">
+                                        {line.productVariant.name}
+                                      </a>
+                                    </h3>
+                                    <p class="ml-4">
+                                      {formatPrice(
+                                        line.unitPriceWithTax,
+                                        order.currencyCode
+                                      )}
+                                    </p>
+                                  </>
+                                </div>
+                              </div>
+                              <div class="flex-1 flex items-center text-sm">
+                                <>
+                                  <div class="text-gray-800">
+                                    <>
+                                      <span class="mr-1">Quantity</span>
+                                      <span class="font-medium">
+                                        {line.quantity}
+                                      </span>
+                                    </>
+                                  </div>
+                                  <div class="flex-1" />
+                                  <div class="flex" />
+                                </>
+                              </div>
+                            </>
+                          </div>
+                        </>
+                      </li>
+                    ))
+                  }
+                </ul>
+              </div>
+            </div><dl class="border-t mt-6 border-gray-200 py-6 space-y-6">
+              <div class="flex items-center justify-between">
+                <dt class="text-sm">Subtotal</dt><dd
+                  class="text-sm font-medium text-gray-900"
+                >
+                  {
+                    formatPrice(
+                      order?.subTotalWithTax,
+                      order?.currencyCode as CurrencyCode
+                    )
+                  }
+                </dd>
+              </div><div class="flex items-center justify-between">
+                <dt class="text-sm">Shipping</dt><dd
+                  class="text-sm font-medium text-gray-900"
+                >
+                  {
+                    formatPrice(
+                      order?.shippingWithTax,
+                      order?.currencyCode as CurrencyCode
+                    )
+                  }
+                </dd>
+              </div><div
+                class="flex items-center justify-between border-t border-gray-200 pt-6"
+              >
+                <dt class="text-base font-medium">Total</dt><dd
+                  class="text-base font-medium text-gray-900"
+                >
+                  {
+                    formatPrice(
+                      order?.totalWithTax,
+                      order?.currencyCode as CurrencyCode
+                    )
+                  }
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

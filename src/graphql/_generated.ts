@@ -3491,6 +3491,13 @@ export type AddPaymentToOrderMutationVariables = Exact<{
 
 export type AddPaymentToOrderMutation = { __typename?: 'Mutation', addPaymentToOrder: { __typename?: 'IneligiblePaymentMethodError', errorCode: ErrorCode, message: string } | { __typename?: 'NoActiveOrderError', errorCode: ErrorCode, message: string } | { __typename: 'Order', id: string, code: string, couponCodes: Array<string>, state: string, currencyCode: CurrencyCode, totalQuantity: number, subTotalWithTax: number, shippingWithTax: number, totalWithTax: number, discounts: Array<{ __typename?: 'Discount', description: string, amountWithTax: number }>, lines: Array<{ __typename?: 'OrderLine', id: string, unitPriceWithTax: number, quantity: number, linePriceWithTax: number, productVariant: { __typename?: 'ProductVariant', id: string, name: string, sku: string }, featuredAsset?: { __typename?: 'Asset', id: string, preview: string } | null }>, shippingLines: Array<{ __typename?: 'ShippingLine', priceWithTax: number, shippingMethod: { __typename?: 'ShippingMethod', id: string, name: string, description: string } }> } | { __typename?: 'OrderPaymentStateError', errorCode: ErrorCode, message: string } | { __typename?: 'OrderStateTransitionError', errorCode: ErrorCode, message: string } | { __typename?: 'PaymentDeclinedError', errorCode: ErrorCode, message: string } | { __typename?: 'PaymentFailedError', errorCode: ErrorCode, message: string } };
 
+export type GetOrderByCodeQueryVariables = Exact<{
+  code: Scalars['String']['input'];
+}>;
+
+
+export type GetOrderByCodeQuery = { __typename?: 'Query', orderByCode?: { __typename?: 'Order', id: string, totalWithTax: number, subTotalWithTax: number, shippingWithTax: number, currencyCode: CurrencyCode, lines: Array<{ __typename?: 'OrderLine', id: string, unitPriceWithTax: number, quantity: number, linePriceWithTax: number, productVariant: { __typename?: 'ProductVariant', id: string, name: string, sku: string }, featuredAsset?: { __typename?: 'Asset', id: string, preview: string } | null }> } | null };
+
 export type DetailedProductFragment = { __typename?: 'Product', id: string, name: string, description: string, collections: Array<{ __typename?: 'Collection', id: string, slug: string, name: string, breadcrumbs: Array<{ __typename?: 'CollectionBreadcrumb', id: string, name: string, slug: string }> }>, facetValues: Array<{ __typename?: 'FacetValue', id: string, code: string, name: string, facet: { __typename?: 'Facet', id: string, code: string, name: string } }>, featuredAsset?: { __typename?: 'Asset', id: string, preview: string } | null, assets: Array<{ __typename?: 'Asset', id: string, preview: string }>, variants: Array<{ __typename?: 'ProductVariant', id: string, name: string, priceWithTax: number, currencyCode: CurrencyCode, sku: string, stockLevel: string, featuredAsset?: { __typename?: 'Asset', id: string, preview: string } | null }> };
 
 export type GetProductByIdQueryVariables = Exact<{
@@ -3833,6 +3840,32 @@ export const AddPaymentToOrderDocument = gql`
   }
 }
     ${ActiveOrderFragmentDoc}`;
+export const GetOrderByCodeDocument = gql`
+    query getOrderByCode($code: String!) {
+  orderByCode(code: $code) {
+    id
+    totalWithTax
+    subTotalWithTax
+    shippingWithTax
+    currencyCode
+    lines {
+      id
+      unitPriceWithTax
+      quantity
+      linePriceWithTax
+      productVariant {
+        id
+        name
+        sku
+      }
+      featuredAsset {
+        id
+        preview
+      }
+    }
+  }
+}
+    `;
 export const GetProductByIdDocument = gql`
     query getProductById($id: ID!) {
   product(id: $id) {
@@ -3933,6 +3966,9 @@ export function getSdk<C>(requester: Requester<C>) {
     },
     addPaymentToOrder(variables: AddPaymentToOrderMutationVariables, options?: C): Promise<AddPaymentToOrderMutation> {
       return requester<AddPaymentToOrderMutation, AddPaymentToOrderMutationVariables>(AddPaymentToOrderDocument, variables, options) as Promise<AddPaymentToOrderMutation>;
+    },
+    getOrderByCode(variables: GetOrderByCodeQueryVariables, options?: C): Promise<GetOrderByCodeQuery> {
+      return requester<GetOrderByCodeQuery, GetOrderByCodeQueryVariables>(GetOrderByCodeDocument, variables, options) as Promise<GetOrderByCodeQuery>;
     },
     getProductById(variables: GetProductByIdQueryVariables, options?: C): Promise<GetProductByIdQuery> {
       return requester<GetProductByIdQuery, GetProductByIdQueryVariables>(GetProductByIdDocument, variables, options) as Promise<GetProductByIdQuery>;

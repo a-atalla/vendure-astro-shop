@@ -79,7 +79,7 @@ if (Astro.request.method === "POST") {
       { astroCookies: Astro.cookies }
     );
 
-    return Astro.redirect("/checkout/confirm");
+    return Astro.redirect(`/checkout/confirm/${result.addPaymentToOrder.code}`);
   }
 }
 ---

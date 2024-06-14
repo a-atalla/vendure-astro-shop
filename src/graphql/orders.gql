@@ -150,3 +150,28 @@ mutation addPaymentToOrder($input: PaymentInput!) {
     }
   }
 }
+
+query getOrderByCode($code: String!) {
+  orderByCode(code: $code) {
+    id
+    totalWithTax
+    subTotalWithTax
+    shippingWithTax
+    currencyCode
+    lines {
+      id
+      unitPriceWithTax
+      quantity
+      linePriceWithTax
+      productVariant {
+        id
+        name
+        sku
+      }
+      featuredAsset {
+        id
+        preview
+      }
+    }
+  }
+}
