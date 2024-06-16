@@ -28,8 +28,15 @@ export function formatPrice(
 		currencyCode,
 	)}`;
 }
+type FacetValue = {
+	id: string;
+	name: string;
+	count: number;
+};
 
-export function aggregateFacetValues(data: any[]): Record<string, string[]> {
+export function aggregateFacetValues(
+	data: any[],
+): Record<string, Array<FacetValue>> {
 	return data.reduce(
 		(acc, item) => {
 			const facetName = item.facetValue.facet.name;

@@ -48,12 +48,12 @@ const products = prodRes.search.items as Array<SearchResult>;
         {
           Object.keys(facets).map((k) => {
             return (
-              <div key={k}>
+              <div>
                 {k}
 
                 {facets[k].map((v) => {
                   return (
-                    <div key={v.id}>
+                    <div>
                       <label>
                         <input
                           name="facetValueID"
