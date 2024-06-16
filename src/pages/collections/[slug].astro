@@ -5,18 +5,34 @@ import type { SearchResult } from "~/graphql/_generated";
 import type { Collection } from "~/graphql/_generated";
 import { sdk } from "~/graphql/sdk";
 import BaseLayout from "~/layouts/base.astro";
+import { aggregateFacetValues } from "~/utils";
 
 const { slug } = Astro.params;
+const facetValueIds = Astro.url.searchParams.getAll("facetValueID");
+
 const colRes = await sdk.getCollection(
   { slug },
   { astroCookies: Astro.cookies }
 );
+
+const vals = await sdk.searchFacetValues(
+  { input: { collectionSlug: slug } },
+  { astroCookies: Astro.cookies }
+);
+
 const prodRes = await sdk.search(
   {
-    input: { collectionSlug: slug, groupByProduct: true },
+    input: {
+      collectionSlug: slug,
+      groupByProduct: true,
+      facetValueFilters: [{ or: facetValueIds || [] }],
+      // facetValueFilters: facetValueIds.map((id) => ({ and: id })),
+    },
   },
   { astroCookies: Astro.cookies }
 );
+
+const facets = aggregateFacetValues(vals.search.facetValues);
 
 const collection = colRes.collection as Collection;
 const subCollections = colRes.collection?.children as Array<Collection>;
@@ -26,7 +42,37 @@ const products = prodRes.search.items as Array<SearchResult>;
 <BaseLayout title={collection.name} description={collection.description}>
   <CollectionsGrid collections={subCollections} />
   <div class="mt-6 grid sm:grid-cols-5 gap-x-4">
-    <div>sidebar</div>
+    <div>
+      <!-- map on object keys -->
+      <form>
+        {
+          Object.keys(facets).map((k) => {
+            return (
+              <div key={k}>
+                {k}
+
+                {facets[k].map((v) => {
+                  return (
+                    <div key={v.id}>
+                      <label>
+                        <input
+                          name="facetValueID"
+                          type="checkbox"
+                          value={v.id}
+                          checked={facetValueIds.includes(v.id)}
+                          onchange="this.form.submit()"
+                        />
+                        {v.name} ({v.count})
+                      </label>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })
+        }
+      </form>
+    </div>
     <ProductsGrid products={products} />
   </div>
 </BaseLayout>

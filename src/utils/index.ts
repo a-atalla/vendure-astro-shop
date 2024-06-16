@@ -28,3 +28,24 @@ export function formatPrice(
 		currencyCode,
 	)}`;
 }
+
+export function aggregateFacetValues(data: any[]): Record<string, string[]> {
+	return data.reduce(
+		(acc, item) => {
+			const facetName = item.facetValue.facet.name;
+			const facetValueName = item.facetValue.name;
+			if (!acc[facetName]) {
+				acc[facetName] = [];
+			}
+			const f = {
+				id: item.facetValue.id,
+				name: facetValueName,
+				count: item.count,
+			};
+			acc[facetName].push(f);
+
+			return acc;
+		},
+		{} as Record<string, string[]>,
+	);
+}
