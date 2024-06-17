@@ -1,5 +1,6 @@
 ---
 import CollectionsGrid from "~/components/collections-grid.astro";
+import FacetsFilter from "~/components/facets-filter.astro";
 import ProductsGrid from "~/components/products-grid.astro";
 import type { SearchResult } from "~/graphql/_generated";
 import type { Collection } from "~/graphql/_generated";
@@ -42,37 +43,11 @@ const products = prodRes.search.items as Array<SearchResult>;
 <BaseLayout title={collection.name} description={collection.description}>
   <CollectionsGrid collections={subCollections} />
   <div class="mt-6 grid sm:grid-cols-5 gap-x-4">
-    <div>
-      <!-- map on object keys -->
-      <form>
-        {
-          Object.keys(facets).map((k) => {
-            return (
-              <div>
-                {k}
-
-                {facets[k].map((v) => {
-                  return (
-                    <div>
-                      <label>
-                        <input
-                          name="facetValueID"
-                          type="checkbox"
-                          value={v.id}
-                          checked={facetValueIds.includes(v.id)}
-                          onchange="this.form.submit()"
-                        />
-                        {v.name} ({v.count})
-                      </label>
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          })
-        }
-      </form>
+    <divn class="hidden lg:block">
+      <FacetsFilter facets={facets} facetValueIds={facetValueIds} />
+    </divn>
+    <div class="col-span-1 sm:col-span-5 lg:col-span-4 space-y-6">
+      <ProductsGrid products={products} />
     </div>
-    <ProductsGrid products={products} />
   </div>
 </BaseLayout>

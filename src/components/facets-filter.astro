@@ -1,0 +1,37 @@
+---
+import type { FacetValue } from "~/utils";
+type Props = {
+  facets: Record<string, FacetValue[]>;
+  facetValueIds: string[];
+};
+const { facets, facetValueIds } = Astro.props;
+---
+
+<form>
+  {
+    Object.keys(facets).map((k) => {
+      return (
+        <div>
+          <h3 class="m-2 font-medium text-gray-700 uppercase">{k}</h3>
+          {facets[k].map((v) => {
+            return (
+              <div>
+                <label class="ml-3 text-sm text-gray-600">
+                  <input
+                    name="facetValueID"
+                    type="checkbox"
+                    class="h-4 w-4 m-1 border-gray-300 rounded text-primary-600 focus:ring-primary-500"
+                    checked={facetValueIds.includes(v.id)}
+                    value={v.id}
+                    onchange="this.form.submit()"
+                  />
+                  {v.name} ({v.count})
+                </label>
+              </div>
+            );
+          })}
+        </div>
+      );
+    })
+  }
+</form>

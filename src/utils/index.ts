@@ -28,7 +28,7 @@ export function formatPrice(
 		currencyCode,
 	)}`;
 }
-type FacetValue = {
+export type FacetValue = {
 	id: string;
 	name: string;
 	count: number;
