@@ -11,11 +11,18 @@ const { seller } = Astro.props;
 ---
 
 <nav>
-  <div class="flex items-center justify-between flex-wrap bg-blue-500 p-6">
+  <div class="flex items-center justify-between flex-wrap bg-slate-800 p-4">
     <div class="flex items-center flex-shrink-0 text-white mr-6">
-      <a href="/" class="font-semibold text-xl tracking-tight"
-        >{seller?.customFields?.siteTitle || "Seller Site Title"}</a
-      >
+      <h1 class="text-white w-10">
+        <a href="/">
+          <img
+            src={seller.customFields?.logo?.preview}
+            width="40"
+            height="31"
+            alt={seller?.customFields?.siteTitle || "Seller Site Title"}
+          />
+        </a>
+      </h1>
     </div>
 
     <div class="flex justify-center items-center">
