@@ -40,10 +40,15 @@ async function sendQuery<Response, Variables = {}>(options: {
 		method: "POST",
 		body: JSON.stringify(options),
 		headers,
-	}).then(async (res) => ({
-		...(await res.json()),
-		headers: res.headers,
-	}));
+	})
+		.then(async (res) => ({
+			...(await res.json()),
+			headers: res.headers,
+		}))
+		.catch((err) => {
+			console.error("######", err.message);
+			throw err;
+		});
 }
 
 const baseSdk = getSdk<QueryOptions>(requester);
