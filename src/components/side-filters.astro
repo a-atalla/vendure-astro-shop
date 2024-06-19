@@ -1,0 +1,46 @@
+---
+import FacetsFilter from "~/components/facets-filter.astro";
+import type { FacetValue } from "~/utils";
+type Props = {
+  facets: Record<string, FacetValue[]>;
+  facetValueIds: string[];
+};
+const { facets, facetValueIds } = Astro.props;
+---
+
+<div
+  class="fixed inset-0 translate-x-full z-40 transition-transform ease-in-out duration-500"
+  data-filters-target="sidebar"
+>
+  <div
+    class="ml-auto relative max-w-xs w-full h-full bg-white shadow-xl py-4 pb-12 flex flex-col overflow-y-auto translate-x-0"
+    id="headlessui-dialog-panel-:r7:"
+    data-headlessui-state="open"
+  >
+    <div class="px-4 flex items-center justify-between">
+      <h3 class="font-medium text-gray-700 uppercase">Filters</h3>
+      <hr />
+
+      <button
+        data-action="click->filters#toggleFilterSidebar"
+        type="button"
+        class="-mr-2 w-10 h-10 bg-white p-2 rounded-md flex items-center justify-center text-gray-400"
+        tabindex="0"
+        ><span class="sr-only">Close menu</span><svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          aria-hidden="true"
+          class="h-6 w-6"
+          ><path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18L18 6M6 6l12 12"></path></svg
+        ></button
+      >
+    </div>
+    <FacetsFilter facets={facets} facetValueIds={facetValueIds} />
+  </div>
+</div>

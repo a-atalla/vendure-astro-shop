@@ -7,6 +7,8 @@ import type { Collection } from "~/graphql/_generated";
 import { sdk } from "~/graphql/sdk";
 import BaseLayout from "~/layouts/base.astro";
 import { aggregateFacetValues } from "~/utils";
+import { Icon } from "astro-icon/components";
+import SideFilters from "~/components/side-filters.astro";
 
 const { slug } = Astro.params;
 const facetValueIds = Astro.url.searchParams.getAll("facetValueID");
@@ -41,6 +43,25 @@ const products = prodRes.search.items as Array<SearchResult>;
 ---
 
 <BaseLayout title={collection.name} description={collection.description}>
+  <div
+    class="mx-2 flex justify-between items-center relative"
+    data-controller="filters"
+  >
+    <SideFilters facets={facets} facetValueIds={facetValueIds} />
+    <h2
+      class="text-3xl sm:text-4xl font-light tracking-tight text-gray-900 my-8"
+    >
+      {collection.name}
+    </h2>
+    <button
+      data-action="click->filters#toggleFilterSidebar"
+      type="button"
+      class="flex space-x-2 items-center border rounded p-2 ml-4 sm:ml-6 text-gray-400 hover:text-gray-500 lg:hidden"
+    >
+      <span>Filters</span>
+      <Icon name="filter" class="w-5 h-5" size={24} />
+    </button>
+  </div>
   <CollectionsGrid collections={subCollections} />
   <div class="mt-6 grid sm:grid-cols-5 gap-x-4">
     <divn class="hidden lg:block">
