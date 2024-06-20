@@ -15,12 +15,7 @@ const { seller } = Astro.props;
     <div class="flex items-center flex-shrink-0 text-white mr-6">
       <h1 class="text-white w-10">
         <a href="/">
-          <img
-            src={seller.customFields?.logo?.preview}
-            width="40"
-            height="31"
-            alt={seller?.customFields?.siteTitle || "Seller Site Title"}
-          />
+          {seller?.customFields?.siteTitle || "Seller Site Title"}
         </a>
       </h1>
     </div>
